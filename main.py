@@ -2,9 +2,11 @@ import json
 import os
 from PIL import Image
 
-# takes in admin.jsonl with Doccano annotations and converts them to YOLOv5 annotation format
+# takes in a JSONL with Doccano annotations and converts them to YOLOv5 annotation format
 # Doccano format: labels are saved with names, 1 .jsonl with 1 line per image - x & y coordinates of upper left corner, height, width, all as pixels
 # YOLOv5 format: labels are saved as 0-indexed numbers, 1 .txt per image - x & y coordinates of center, height, width, all as ratios of image size
+
+# TODO: make sure that all yolo annotation files reference the same labels.txt file
 
 # create the 'yolov5' directory if it doesn't exist
 if not os.path.exists('yolov5'):
@@ -13,7 +15,7 @@ if not os.path.exists('yolov5'):
 # labels are saved in dict, this must correspond to YOLO .yaml
 unique_labels_dict = {}
 
-with open('admin.jsonl') as json_file:
+with open('doccano.jsonl') as json_file:
     json_list = json_file.readlines()
 
     for json_str in json_list:
@@ -48,5 +50,10 @@ with open('admin.jsonl') as json_file:
 
                 # write YOLOv5 format annotation to file
                 yolo_file.write(f"{label_index} {x_center:.6f} {y_center:.6f} {width:.6f} {height:.6f}\n")
+
+    # write YOLOv5 label file
+    with open('yolov5/labels.txt', 'w') as label_file:
+        for key in unique_labels_dict.keys():
+            label_file.write(key + "\n")
 
 print("Conversion to YOLOv5 format completed.")
