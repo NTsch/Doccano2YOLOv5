@@ -1,6 +1,7 @@
 import json
 import os
 from PIL import Image
+import random
 
 # Define the path to your JSONL file
 jsonl_file_path = "doccano.jsonl"
@@ -34,7 +35,13 @@ with open(jsonl_file_path, "r") as jsonl_file:
 
                     content = {"image_wh": [width, height]}
 
+                    # initiate empty lists
                     content["rect_LTRB"] = []
+                    content["rect_classes"] = []
+                    content["class_names"] = []
+                    content["class_colors"] = []
+                    content["user"] = ""
+                    content["image_md5"] = filename.removesuffix('.jpg')
 
                     for bbox in data.get("bbox"):
                         content["rect_LTRB"].append(
@@ -45,6 +52,20 @@ with open(jsonl_file_path, "r") as jsonl_file:
                                 round(bbox["y"] + bbox["height"]),
                             ]
                         )
+                        
+                        # insert "class_names"
+                        if bbox["label"] not in content["class_names"]: content["class_names"].append(bbox["label"])
+
+                        # insert "rect_classes"
+                        content["rect_classes"].append(content["class_names"].index(bbox["label"]))
+
+                    # insert "class_colors" (optional?)
+                    '''
+                    for class_name in content["class_names"]:
+                        r = lambda: random.randint(0,255)
+                        hex_color = '#%02X%02X%02X' % (r(),r(),r())
+                        content["class_colors"].append(hex_color)
+                    '''
 
                     # Create an empty JSON file with the extracted filename
                     output_file_path = os.path.join(
@@ -55,7 +76,7 @@ with open(jsonl_file_path, "r") as jsonl_file:
                 else:
                     print(f"No such image as {image_file_path}")
 
-                print(f'Created JSON file with "image_wh" key: {output_file_path}')
+                print(f'Created JSON file: {output_file_path}')
 
             else:
                 print('Skipping line - No "filename" key found.')
