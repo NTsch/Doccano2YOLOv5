@@ -1,0 +1,55 @@
+{
+    "image_wh": [
+        3000,
+        2119
+    ],
+    "rect_LTRB": [
+        [
+            2297,
+            56,
+            2919,
+            2032
+        ],
+        [
+            198,
+            487,
+            581,
+            854
+        ],
+        [
+            504,
+            533,
+            2238,
+            1425
+        ],
+        [
+            500,
+            526,
+            544,
+            583
+        ],
+        [
+            97,
+            480,
+            2254,
+            1659
+        ]
+    ],
+    "rect_classes": [
+        0,
+        1,
+        2,
+        3,
+        4
+    ],
+    "class_names": [
+        "calibration_card",
+        "initial",
+        "old_text",
+        "decorative",
+        "writable_area"
+    ],
+    "class_colors": [],
+    "user": "",
+    "image_md5": "30474263e747cd10e040f547948ceb5a"
+}

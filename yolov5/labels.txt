@@ -1,0 +1,12 @@
+initial
+calibration_card
+decorative
+seal_ties
+old_text
+plica
+writable_area
+seal
+filler
+old_note
+other_ornament
+ignore
