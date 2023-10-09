@@ -8,14 +8,17 @@ from PIL import Image
 
 # TODO: make sure that all yolo annotation files reference the same labels.txt file
 
+doccano_path = 'admin.jsonl'
+yolov5_path = 'yolov5_noe_500'
+
 # create the 'yolov5' directory if it doesn't exist
-if not os.path.exists('yolov5'):
-    os.makedirs('yolov5')
+if not os.path.exists(yolov5_path):
+    os.makedirs(yolov5_path)
 
 # labels are saved in dict, this must correspond to YOLO .yaml
 unique_labels_dict = {}
 
-with open('doccano.jsonl') as json_file:
+with open(doccano_path) as json_file:
     json_list = json_file.readlines()
 
     for json_str in json_list:
@@ -24,19 +27,19 @@ with open('doccano.jsonl') as json_file:
 
         img_path = os.path.join('images', img_name + '.jpg')  # adjust 'images_directory' as needed
 
-        for idx, bbox in enumerate(json_obj['bbox']):
+        # add label names to dict
+        for bbox in json_obj['bbox']:
             label = bbox['label']
             if label not in unique_labels_dict:
-                unique_labels_dict[label] = idx
+                unique_labels_dict[label] = len(unique_labels_dict)
         
-        # open image to get its dimensions
-        with Image.open(img_path) as img:
-            img_width, img_height = img.size
+            # open image to get its dimensions
+            with Image.open(img_path) as img:
+                img_width, img_height = img.size
 
-        with open(f'yolov5/{img_name}.txt', 'w') as yolo_file:
+            with open(f'{yolov5_path}/{img_name}.txt', 'a+') as yolo_file:
             
-            # calculate ratios
-            for bbox in json_obj['bbox']:
+                # calculate ratios
                 x_upper_left = bbox['x'] / img_width
                 y_upper_left = bbox['y'] / img_height
                 width = bbox['width'] / img_width
@@ -44,15 +47,13 @@ with open('doccano.jsonl') as json_file:
                 x_center = x_upper_left + (width / 2)
                 y_center = y_upper_left + (height / 2)
 
-                # add label names to dict
-                label = bbox['label']
                 label_index = unique_labels_dict[label]
 
                 # write YOLOv5 format annotation to file
                 yolo_file.write(f"{label_index} {x_center:.6f} {y_center:.6f} {width:.6f} {height:.6f}\n")
 
     # write YOLOv5 label file
-    with open('yolov5/labels.txt', 'w') as label_file:
+    with open(f'{yolov5_path}/labels.txt', 'w') as label_file:
         for key in unique_labels_dict.keys():
             label_file.write(key + "\n")
 
