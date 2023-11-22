@@ -1,14 +1,16 @@
 import json
 import os
+import shutil
 from PIL import Image
 import random
 
 # Define the path to your JSONL file
 jsonl_file_path = "doccano.jsonl"
 
-# Create a directory to store the output JSON files if it doesn't exist
+# Create a directory to store the output JSON files
 output_directory = "frat"
-os.makedirs(output_directory, exist_ok=True)
+shutil.rmtree(output_directory)
+os.makedirs(output_directory)
 
 # Open and iterate through the JSONL file
 with open(jsonl_file_path, "r") as jsonl_file:

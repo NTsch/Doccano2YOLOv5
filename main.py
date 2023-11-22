@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 from PIL import Image
 
 # takes in a JSONL with Doccano annotations and converts them to YOLOv5 annotation format
@@ -11,8 +12,9 @@ from PIL import Image
 doccano_path = 'admin.jsonl'
 yolov5_path = 'yolov5_noe_500'
 
-# create the 'yolov5' directory if it doesn't exist
-if not os.path.exists(yolov5_path):
+# create the 'yolov5' directory for the outputs
+if os.path.exists(yolov5_path):
+    shutil.rmtree(yolov5_path)
     os.makedirs(yolov5_path)
 
 # labels are saved in dict, this must correspond to YOLO .yaml
